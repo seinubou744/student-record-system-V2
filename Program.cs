@@ -88,15 +88,19 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     try
     {
+        Console.WriteLine("[DEBUG] Running migrations...");
+        var context = services.GetRequiredService<ApplicationDbContext>();
+        context.Database.Migrate();
+        Console.WriteLine("[DEBUG] Migrations completed!");
+
         Console.WriteLine("[DEBUG] Starting database seed...");
         await SeedData.InitializeAsync(services);
         Console.WriteLine("[DEBUG] Database seed completed!");
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"[ERROR] Seed failed: {ex.Message}");
+        Console.WriteLine($"[ERROR] Failed: {ex.Message}");
         Console.WriteLine($"[ERROR] Inner: {ex.InnerException?.Message}");
-        Console.WriteLine($"[ERROR] Stack: {ex.StackTrace}");
     }
 }
 
