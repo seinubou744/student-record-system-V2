@@ -1,0 +1,445 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Dashboard";
+    var isAdmin = User.IsInRole("Admin");
+    var isStudent = User.IsInRole("Student");
+    var isTeacher = User.IsInRole("Teacher");
+}
+
+<div class="dashboard-hero mb-4">
+    <div>
+        @if (isAdmin)
+        {
+            <p class="eyebrow mb-2">Administration</p>
+            <h1 class="hero-title mb-2">Shukur Quran Institute Dashboard</h1>
+            <p class="hero-text mb-0">
+                Manage students, class rooms, subjects, teacher accounts, and teacher assignments from one professional workspace.
+            </p>
+        }
+        else if (isTeacher)
+        {
+            <p class="eyebrow mb-2">Teacher Portal</p>
+            <h1 class="hero-title mb-2">Teaching and Progress Dashboard</h1>
+            <p class="hero-text mb-0">
+                Record attendance, manage Qur'an and Mutoon progress, and update student test results from one organized portal.
+            </p>
+        }
+        else if (isStudent)
+        {
+            <p class="eyebrow mb-2">Student Portal</p>
+            <h1 class="hero-title mb-2">Welcome to Shukur Quran Institute</h1>
+            <p class="hero-text mb-0">
+                View your attendance, Qur'an progress, Mutoon progress, and study support tools in one place.
+            </p>
+        }
+        else
+        {
+            <p class="eyebrow mb-2">Shukur Quran Institute</p>
+            <h1 class="hero-title mb-2">Student and Learning Management Portal</h1>
+            <p class="hero-text mb-0">
+                A secure and modern platform designed to support Qur'anic education, student development, academic excellence, and institutional administration.
+            </p>
+        }
+    </div>
+
+    <div class="hero-badge">
+        <span>@DateTime.Now.ToString("dddd, dd MMM yyyy")</span>
+    </div>
+</div>
+
+@if (isAdmin)
+{
+    <div class="row g-4 mb-4">
+        <div class="col-md-6 col-xl-4">
+            <div class="card stat-card border-0 h-100">
+                <div class="card-body">
+                    <p class="stat-label">Students</p>
+                    <h2 class="stat-value">@Model.TotalStudents</h2>
+                    <p class="stat-text">Registered student records in the institute.</p>
+                    <a asp-page="/Students/Index" class="btn btn-primary w-100">Open Students</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-4">
+            <div class="card stat-card border-0 h-100">
+                <div class="card-body">
+                    <p class="stat-label">Class Rooms</p>
+                    <h2 class="stat-value">@Model.TotalClassRooms</h2>
+                    <p class="stat-text">Configured class rooms and teaching groups.</p>
+                    <a asp-page="/ClassRooms/Index" class="btn btn-outline-primary w-100">Open Class Rooms</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-4">
+            <div class="card stat-card border-0 h-100">
+                <div class="card-body">
+                    <p class="stat-label">Subjects</p>
+                    <h2 class="stat-value">@Model.TotalSubjects</h2>
+                    <p class="stat-text">Subjects and learning areas available in the system.</p>
+                    <a asp-page="/Subjects/Index" class="btn btn-outline-primary w-100">Open Subjects</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-lg-8">
+            <div class="card border-0 h-100">
+                <div class="card-body p-4">
+                    <h3 class="section-title mb-3">Quick Actions</h3>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <a asp-page="/Students/Create" class="quick-action-card">
+                                <span class="quick-title">Add Student</span>
+                                <span class="quick-text">Create a new student record.</span>
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a asp-page="/Subjects/Create" class="quick-action-card">
+                                <span class="quick-title">Create Subject</span>
+                                <span class="quick-text">Add a subject under a class room.</span>
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a asp-page="/ClassRooms/Index" class="quick-action-card">
+                                <span class="quick-title">Manage Classes</span>
+                                <span class="quick-text">Open and manage class rooms.</span>
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a asp-page="/Admin/CreateTeacher" class="quick-action-card">
+                                <span class="quick-title">Create Teacher</span>
+                                <span class="quick-text">Create a new teacher account.</span>
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a asp-page="/Admin/AssignTeacherClasses" class="quick-action-card">
+                                <span class="quick-title">Assign Teacher Classes</span>
+                                <span class="quick-text">Assign teachers to class rooms.</span>
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a asp-page="/Admin/TeacherAttendance/Index" class="quick-action-card">
+                                <span class="quick-title">Teacher Attendance</span>
+                                <span class="quick-text">View and manage teacher attendance records.</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card border-0 h-100">
+                <div class="card-body p-4">
+                    <h3 class="section-title mb-3">Management</h3>
+                    <div class="d-grid gap-3">
+                        <a asp-page="/Students/Index" class="btn btn-light text-start dashboard-link">Student Management</a>
+                        <a asp-page="/Subjects/Index" class="btn btn-light text-start dashboard-link">Subject Management</a>
+                        <a asp-page="/ClassRooms/Index" class="btn btn-light text-start dashboard-link">Class Room Management</a>
+                        <a asp-page="/Admin/CreateTeacher" class="btn btn-light text-start dashboard-link">Teacher Accounts</a>
+                        <a asp-page="/Admin/AssignTeacherClasses" class="btn btn-light text-start dashboard-link">Teacher Class Assignments</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else if (isTeacher)
+{
+    <div class="row g-4 mb-4">
+        <div class="col-md-6 col-xl-4">
+            <div class="card stat-card border-0 h-100">
+                <div class="card-body">
+                    <p class="stat-label">Attendance</p>
+                    <h2 class="stat-value">Daily</h2>
+                    <p class="stat-text">Take and review class attendance for assigned students.</p>
+                    <a asp-page="/TeacherPortal/Attendance" class="btn btn-primary w-100">Open Attendance</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-4">
+            <div class="card stat-card border-0 h-100">
+                <div class="card-body">
+                    <p class="stat-label">Qur'an & Mutoon</p>
+                    <h2 class="stat-value">Records</h2>
+                    <p class="stat-text">Update learning progress and remarks for each student.</p>
+                    <a asp-page="/TeacherPortal/Progress" class="btn btn-outline-primary w-100">Open Progress</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-4">
+            <div class="card stat-card border-0 h-100">
+                <div class="card-body">
+                    <p class="stat-label">Tests</p>
+                    <h2 class="stat-value">Results</h2>
+                    <p class="stat-text">Enter and manage test results for Qur'an or Mutoon.</p>
+                    <a asp-page="/TeacherPortal/Tests" class="btn btn-outline-primary w-100">Open Tests</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card border-0">
+        <div class="card-body p-4">
+            <h3 class="section-title mb-3">Teacher Quick Access</h3>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <a asp-page="/TeacherPortal/Index" class="quick-action-card">
+                        <span class="quick-title">Teacher Portal</span>
+                        <span class="quick-text">Go to your teaching dashboard and overview.</span>
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a asp-page="/TeacherPortal/Attendance" class="quick-action-card">
+                        <span class="quick-title">Take Attendance</span>
+                        <span class="quick-text">Mark student attendance by class and date.</span>
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a asp-page="/TeacherPortal/Progress" class="quick-action-card">
+                        <span class="quick-title">Update Records</span>
+                        <span class="quick-text">Save Qur'an and Mutoon progress correctly.</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else if (isStudent)
+{
+    <div class="row g-4 mb-4">
+        <div class="col-md-6 col-xl-3">
+            <div class="card stat-card border-0 h-100">
+                <div class="card-body">
+                    <p class="stat-label">Attendance</p>
+                    <h2 class="stat-value">My</h2>
+                    <p class="stat-text">View your attendance records and daily presence.</p>
+                    <a asp-page="/StudentPortal/Attendance" class="btn btn-primary w-100">Open Attendance</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <div class="card stat-card border-0 h-100">
+                <div class="card-body">
+                    <p class="stat-label">Qur'an</p>
+                    <h2 class="stat-value">My</h2>
+                    <p class="stat-text">View your Qur'an memorization and learning progress.</p>
+                    <a asp-page="/StudentPortal/QuranProgress" class="btn btn-success w-100">Open Qur'an Progress</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <div class="card stat-card border-0 h-100">
+                <div class="card-body">
+                    <p class="stat-label">Mutoon</p>
+                    <h2 class="stat-value">My</h2>
+                    <p class="stat-text">View your Mutoon progress and remarks.</p>
+                    <a asp-page="/StudentPortal/MutoonProgress" class="btn btn-dark w-100">Open Mutoon Progress</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-xl-3">
+            <div class="card stat-card border-0 h-100">
+                <div class="card-body">
+                    <p class="stat-label">Matching</p>
+                    <h2 class="stat-value">Peer</h2>
+                    <p class="stat-text">Find another student with similar Qur'an or Mutoon progress.</p>
+                    <a asp-page="/StudentPortal/Match" class="btn btn-warning w-100">Find Study Partner</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card border-0">
+        <div class="card-body p-4">
+            <h3 class="section-title mb-3">Student Quick Access</h3>
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <a asp-page="/StudentPortal/Index" class="quick-action-card">
+                        <span class="quick-title">Student Portal</span>
+                        <span class="quick-text">Open your dashboard and portal overview.</span>
+                    </a>
+                </div>
+                <div class="col-md-3">
+                    <a asp-page="/StudentPortal/Attendance" class="quick-action-card">
+                        <span class="quick-title">Attendance</span>
+                        <span class="quick-text">Review your daily attendance record.</span>
+                    </a>
+                </div>
+                <div class="col-md-3">
+                    <a asp-page="/StudentPortal/QuranProgress" class="quick-action-card">
+                        <span class="quick-title">Qur'an Progress</span>
+                        <span class="quick-text">See your memorization and revision progress.</span>
+                    </a>
+                </div>
+                <div class="col-md-3">
+                    <a asp-page="/StudentPortal/Match" class="quick-action-card">
+                        <span class="quick-title">Study Match</span>
+                        <span class="quick-text">Find a suitable study partner.</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <section class="institution-home">
+        <section class="institution-hero mb-5">
+            <div class="institution-hero-inner">
+                <p class="institution-kicker">Shukur Qur'an Institute</p>
+                <h1 class="institution-title">Welcome to Shukur Qur'an Institute</h1>
+                <p class="institution-tagline">“Illuminating Hearts Through the Noble Qur'an”</p>
+                <p class="institution-lead">
+                    Shukur Qur'an Institute is dedicated to the teaching, preservation, and transmission of the Noble Qur'an through excellence in education, sincerity in purpose, and adherence to authentic Islamic principles.
+                </p>
+                <p class="institution-lead">
+                    We strive to cultivate a generation of learners who recite the Qur'an with precision, understand its teachings with wisdom, and embody its values in their daily lives.
+                </p>
+            </div>
+        </section>
+
+        <section class="institution-section mb-4">
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <div class="institution-panel h-100">
+                        <p class="institution-panel-label">Our Mission</p>
+                        <h2 class="institution-panel-title">A lifelong connection with the Book of Allah</h2>
+                        <p class="institution-panel-text">
+                            To provide high-quality Qur'anic education that inspires spiritual growth, strengthens faith, and nurtures a lifelong connection with the Book of Allah.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="institution-panel h-100">
+                        <p class="institution-panel-label">Our Vision</p>
+                        <h2 class="institution-panel-title">A trusted center of Qur'anic learning</h2>
+                        <p class="institution-panel-text">
+                            To be a trusted center of Qur'anic learning that empowers students worldwide through knowledge, discipline, and Islamic character.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="institution-section mb-4">
+            <div class="institution-block">
+                <div class="institution-block-header">
+                    <p class="institution-panel-label">Areas of Study</p>
+                    <h2 class="institution-block-title">A balanced path of learning and development</h2>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-md-6 col-xl-4">
+                        <div class="institution-card h-100">
+                            <h3 class="institution-card-title">Qur'an Reading and Recitation</h3>
+                            <p class="institution-card-text">Building confidence, fluency, and reverence in the recitation of the Noble Qur'an.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-xl-4">
+                        <div class="institution-card h-100">
+                            <h3 class="institution-card-title">Tajweed and Pronunciation Mastery</h3>
+                            <p class="institution-card-text">Teaching correct articulation and recitation rules with precision and care.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-xl-4">
+                        <div class="institution-card h-100">
+                            <h3 class="institution-card-title">Qur'an Memorization (Hifdh)</h3>
+                            <p class="institution-card-text">Supporting students in memorization through structured guidance and steady progress.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-xl-6">
+                        <div class="institution-card h-100">
+                            <h3 class="institution-card-title">Revision and Retention Programs</h3>
+                            <p class="institution-card-text">Strengthening long-term retention through regular review, discipline, and continuity.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-xl-6">
+                        <div class="institution-card h-100">
+                            <h3 class="institution-card-title">Islamic Studies and Character Development</h3>
+                            <p class="institution-card-text">Nurturing understanding, manners, sincerity, and Islamic character alongside Qur'anic study.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="institution-section mb-4">
+            <div class="institution-block">
+                <div class="institution-block-header">
+                    <p class="institution-panel-label">Our Values</p>
+                    <h2 class="institution-block-title">Principles that guide our teaching and learning</h2>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-md-6 col-xl-3">
+                        <div class="institution-value-card h-100">
+                            <h3 class="institution-value-title">Excellence</h3>
+                            <p class="institution-value-text">Pursuing the highest standards in teaching and learning.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-xl-3">
+                        <div class="institution-value-card h-100">
+                            <h3 class="institution-value-title">Integrity</h3>
+                            <p class="institution-value-text">Upholding sincerity, honesty, and Islamic ethics.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-xl-3">
+                        <div class="institution-value-card h-100">
+                            <h3 class="institution-value-title">Respect</h3>
+                            <p class="institution-value-text">Fostering a learning environment built upon mutual respect and good character.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-xl-3">
+                        <div class="institution-value-card h-100">
+                            <h3 class="institution-value-title">Dedication</h3>
+                            <p class="institution-value-text">Encouraging consistency and commitment in the pursuit of knowledge.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="institution-section mb-4">
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <div class="institution-quote-card h-100">
+                        <p class="institution-panel-label">A Message of Inspiration</p>
+                        <blockquote class="institution-quote">
+                            <p>“Indeed, this Qur'an guides to that which is most upright.”</p>
+                            <footer>Surah Al-Isra 17:9</footer>
+                        </blockquote>
+                        <p class="institution-panel-text mb-0">
+                            At Shukur Qur'an Institute, we believe that the Qur'an is not merely a text to be recited, but a guide to be understood, lived, and cherished throughout one's life.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="institution-signature-card h-100">
+                        <p class="institution-signature-name">Shukur Qur'an Institute</p>
+                        <p class="institution-signature-meta">Knowledge • Character • Excellence</p>
+                        <p class="institution-signature-quote">“Connecting Hearts to the Words of Allah” ﷺ</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </section>
+}

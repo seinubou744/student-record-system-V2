@@ -1,0 +1,312 @@
+@page
+@model StudentRecordSystem.Pages.TeacherPortal.TestsModel
+@using StudentRecordSystem.Models
+@{
+    ViewData["Title"] = "Student Tests";
+}
+
+<div class="dashboard-hero mb-4">
+    <div>
+        <p class="eyebrow mb-2">Teacher Portal</p>
+        <h1 class="hero-title mb-2">Student Test Records</h1>
+        <p class="hero-text mb-0">
+            Load a class, choose the test type and date, then record student Qur'an or Mutoon test range, marks, and remarks.
+        </p>
+    </div>
+
+    <div class="hero-badge">
+        <span>@DateTime.Now.ToString("dddd, dd MMM yyyy")</span>
+    </div>
+</div>
+
+@if (!string.IsNullOrWhiteSpace(Model.SuccessMessage))
+{
+    <div class="alert alert-success border-0 shadow-sm mb-4" role="alert">
+        @Model.SuccessMessage
+    </div>
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.DebugMessage))
+{
+    <div class="alert alert-info border-0 shadow-sm mb-4" role="alert">
+        @Model.DebugMessage
+    </div>
+}
+
+<div asp-validation-summary="All" class="alert alert-danger border-0 shadow-sm mb-4 validation-summary-custom">
+    <span class="fw-semibold">Please correct the following errors:</span>
+</div>
+
+<datalist id="surah-list">
+    @foreach (var surah in Model.SurahList)
+    {
+        <option value="@surah"></option>
+    }
+</datalist>
+
+<div class="card border-0 mb-4">
+    <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
+            <div>
+                <h3 class="section-title mb-1">Load Test Sheet</h3>
+                <p class="stat-text mb-0">Choose class, test type, and date to load students for assessment entry.</p>
+            </div>
+
+            @if (Model.Items.Any())
+            {
+                <span class="badge text-bg-light px-3 py-2 fs-6">
+                    @Model.Items.Count student(s)
+                </span>
+            }
+        </div>
+
+        <form method="get" class="row g-3">
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">Class</label>
+                <select asp-for="ClassRoomId" asp-items="Model.TeacherClasses" class="form-select">
+                    <option value="">-- Select Class --</option>
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">Test Type</label>
+                <select asp-for="TestType" class="form-select" onchange="this.form.submit()">
+                    <option value="@LearningRecordType.Quran">Qur'an</option>
+                    <option value="@LearningRecordType.Mutoon">Mutoon</option>
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <label asp-for="TestDate" class="form-label fw-semibold">Test Date</label>
+                <input asp-for="TestDate" type="date" class="form-control" value="@Model.TestDate.ToString("yyyy-MM-dd")" />
+            </div>
+
+            <div class="col-md-3 d-flex align-items-end">
+                <button type="submit" class="btn btn-outline-primary w-100">Load Tests</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<form method="post">
+    <input type="hidden" asp-for="ClassRoomId" />
+    <input type="hidden" asp-for="TestType" />
+    <input type="hidden" asp-for="TestDate" />
+
+    <div class="card border-0">
+        <div class="card-body p-0">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 p-4 border-bottom">
+                <div>
+                    <h3 class="section-title mb-1">
+                        @(Model.TestType == LearningRecordType.Quran ? "Qur'an Test Register" : "Mutoon Test Register")
+                    </h3>
+                    <p class="stat-text mb-0">Enter the tested range, marks, and teacher remarks for each student.</p>
+                </div>
+
+                @if (Model.Items.Any())
+                {
+                    <button type="submit" class="btn btn-primary">Save All Test Records</button>
+                }
+            </div>
+
+            @if (Model.Items.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            @if (Model.TestType == LearningRecordType.Quran)
+                            {
+                                <tr>
+                                    <th class="ps-4">Student ID</th>
+                                    <th>Name</th>
+                                    <th style="min-width: 180px;">From Surah</th>
+                                    <th style="min-width: 130px;">From Ayah</th>
+                                    <th style="min-width: 180px;">To Surah</th>
+                                    <th style="min-width: 130px;">To Ayah</th>
+                                    <th style="min-width: 130px;">Marks</th>
+                                    <th style="min-width: 240px;">Remarks</th>
+                                    <th style="min-width: 140px;" class="pe-4">Action</th>
+                                </tr>
+                            }
+                            else
+                            {
+                                <tr>
+                                    <th class="ps-4">Student ID</th>
+                                    <th>Name</th>
+                                    <th style="min-width: 220px;">Matn Name</th>
+                                    <th style="min-width: 220px;">From Portion</th>
+                                    <th style="min-width: 220px;">To Portion</th>
+                                    <th style="min-width: 130px;">Marks</th>
+                                    <th style="min-width: 240px;">Remarks</th>
+                                    <th style="min-width: 140px;" class="pe-4">Action</th>
+                                </tr>
+                            }
+                        </thead>
+                        <tbody>
+                            @for (int i = 0; i < Model.Items.Count; i++)
+                            {
+                                <tr>
+                                    <td class="ps-4">
+                                        <span class="fw-semibold">@Model.Items[i].StudentCode</span>
+                                        <input type="hidden" asp-for="Items[i].StudentId" />
+                                        <input type="hidden" asp-for="Items[i].StudentCode" />
+                                        <input type="hidden" asp-for="Items[i].StudentName" />
+                                        <input type="hidden" asp-for="Items[i].ClassRoomId" />
+                                    </td>
+
+                                    <td>
+                                        <div class="fw-semibold text-dark">@Model.Items[i].StudentName</div>
+                                    </td>
+
+                                    @if (Model.TestType == LearningRecordType.Quran)
+                                    {
+                                        <td>
+                                            <input asp-for="Items[i].FromSurah" class="form-control" list="surah-list" placeholder="Search or select Surah" />
+                                        </td>
+
+                                        <td>
+                                            <input asp-for="Items[i].FromAyah" class="form-control" type="number" min="1" placeholder="From Ayah" />
+                                        </td>
+
+                                        <td>
+                                            <input asp-for="Items[i].ToSurah" class="form-control" list="surah-list" placeholder="Search or select Surah" />
+                                        </td>
+
+                                        <td>
+                                            <input asp-for="Items[i].ToAyah" class="form-control" type="number" min="1" placeholder="To Ayah" />
+                                        </td>
+
+                                        <td>
+                                            <input asp-for="Items[i].Marks" class="form-control" type="number" step="0.01" min="0" placeholder="0.00" />
+                                        </td>
+
+                                        <td>
+                                            <input asp-for="Items[i].Remarks" class="form-control" placeholder="Optional remarks" />
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td>
+                                            <input asp-for="Items[i].MatnName" class="form-control" placeholder="Matn Name" />
+                                        </td>
+
+                                        <td>
+                                            <input asp-for="Items[i].FromPortion" class="form-control" placeholder="From Portion" />
+                                        </td>
+
+                                        <td>
+                                            <input asp-for="Items[i].ToPortion" class="form-control" placeholder="To Portion" />
+                                        </td>
+
+                                        <td>
+                                            <input asp-for="Items[i].Marks" class="form-control" type="number" step="0.01" min="0" placeholder="0.00" />
+                                        </td>
+
+                                        <td>
+                                            <input asp-for="Items[i].Remarks" class="form-control" placeholder="Optional remarks" />
+                                        </td>
+                                    }
+
+                                    <td class="pe-4">
+                                        <button type="button"
+                                                class="btn btn-sm btn-outline-primary row-save-btn"
+                                                data-student-id="@Model.Items[i].StudentId"
+                                                data-student-code="@Model.Items[i].StudentCode"
+                                                data-student-name="@Model.Items[i].StudentName"
+                                                data-classroom-id="@Model.Items[i].ClassRoomId">
+                                            Save
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="p-4 border-top bg-light-subtle">
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary px-4">Save All Test Records</button>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="p-4">
+                    <div class="text-center py-5">
+                        <h4 class="section-title mb-2">No test sheet loaded</h4>
+                        <p class="stat-text mb-0">
+                            Select a class, choose the test type and date, then click <strong>Load Tests</strong> to begin.
+                        </p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</form>
+
+<form method="post" asp-page-handler="SaveStudent" id="singleStudentForm" class="d-none">
+    <input type="hidden" asp-for="ClassRoomId" />
+    <input type="hidden" asp-for="TestType" />
+    <input type="hidden" asp-for="TestDate" />
+
+    <input type="hidden" name="RowInput.StudentId" id="rowStudentId" />
+    <input type="hidden" name="RowInput.StudentCode" id="rowStudentCode" />
+    <input type="hidden" name="RowInput.StudentName" id="rowStudentName" />
+    <input type="hidden" name="RowInput.ClassRoomId" id="rowClassRoomId" />
+
+    <input type="hidden" name="RowInput.FromSurah" id="rowFromSurah" />
+    <input type="hidden" name="RowInput.FromAyah" id="rowFromAyah" />
+    <input type="hidden" name="RowInput.ToSurah" id="rowToSurah" />
+    <input type="hidden" name="RowInput.ToAyah" id="rowToAyah" />
+
+    <input type="hidden" name="RowInput.MatnName" id="rowMatnName" />
+    <input type="hidden" name="RowInput.FromPortion" id="rowFromPortion" />
+    <input type="hidden" name="RowInput.ToPortion" id="rowToPortion" />
+
+    <input type="hidden" name="RowInput.Marks" id="rowMarks" />
+    <input type="hidden" name="RowInput.Remarks" id="rowRemarks" />
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const buttons = document.querySelectorAll(".row-save-btn");
+            const singleForm = document.getElementById("singleStudentForm");
+
+            buttons.forEach(button => {
+                button.addEventListener("click", function () {
+                    const row = button.closest("tr");
+
+                    document.getElementById("rowStudentId").value = button.dataset.studentId || "";
+                    document.getElementById("rowStudentCode").value = button.dataset.studentCode || "";
+                    document.getElementById("rowStudentName").value = button.dataset.studentName || "";
+                    document.getElementById("rowClassRoomId").value = button.dataset.classroomId || "";
+
+                    const fromSurah = row.querySelector('input[name$=".FromSurah"]');
+                    const fromAyah = row.querySelector('input[name$=".FromAyah"]');
+                    const toSurah = row.querySelector('input[name$=".ToSurah"]');
+                    const toAyah = row.querySelector('input[name$=".ToAyah"]');
+                    const matnName = row.querySelector('input[name$=".MatnName"]');
+                    const fromPortion = row.querySelector('input[name$=".FromPortion"]');
+                    const toPortion = row.querySelector('input[name$=".ToPortion"]');
+                    const marks = row.querySelector('input[name$=".Marks"]');
+                    const remarks = row.querySelector('input[name$=".Remarks"]');
+
+                    document.getElementById("rowFromSurah").value = fromSurah ? fromSurah.value : "";
+                    document.getElementById("rowFromAyah").value = fromAyah ? fromAyah.value : "";
+                    document.getElementById("rowToSurah").value = toSurah ? toSurah.value : "";
+                    document.getElementById("rowToAyah").value = toAyah ? toAyah.value : "";
+                    document.getElementById("rowMatnName").value = matnName ? matnName.value : "";
+                    document.getElementById("rowFromPortion").value = fromPortion ? fromPortion.value : "";
+                    document.getElementById("rowToPortion").value = toPortion ? toPortion.value : "";
+                    document.getElementById("rowMarks").value = marks ? marks.value : "";
+                    document.getElementById("rowRemarks").value = remarks ? remarks.value : "";
+
+                    singleForm.submit();
+                });
+            });
+        });
+    </script>
+}
