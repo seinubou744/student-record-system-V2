@@ -88,12 +88,14 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     try
     {
-        Console.WriteLine("[DEBUG] Running migrations...");
+        Console.WriteLine("[DEBUG] Ensuring database created...");
         var context = services.GetRequiredService<ApplicationDbContext>();
         context.Database.EnsureCreated();
-        Console.WriteLine("[DEBUG] Migrations completed!");
+        Console.WriteLine("[DEBUG] Database tables ready!");
 
-        Console.WriteLine("[DEBUG] SeedData skipped for now.");
+        Console.WriteLine("[DEBUG] Starting database seed...");
+        await SeedData.InitializeAsync(services);
+        Console.WriteLine("[DEBUG] Database seed completed!");
     }
     catch (Exception ex)
     {
