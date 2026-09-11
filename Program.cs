@@ -88,8 +88,9 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     try
     {
-        Console.WriteLine("[DEBUG] Ensuring database created...");
+        Console.WriteLine("[DEBUG] Recreating database...");
         var context = services.GetRequiredService<ApplicationDbContext>();
+        context.Database.EnsureDeleted();
         context.Database.EnsureCreated();
         Console.WriteLine("[DEBUG] Database tables ready!");
 
