@@ -93,9 +93,7 @@ using (var scope = app.Services.CreateScope())
         context.Database.Migrate();
         Console.WriteLine("[DEBUG] Migrations completed!");
 
-        Console.WriteLine("[DEBUG] Starting database seed...");
-        await SeedData.InitializeAsync(services);
-        Console.WriteLine("[DEBUG] Database seed completed!");
+        Console.WriteLine("[DEBUG] SeedData skipped for now.");
     }
     catch (Exception ex)
     {
