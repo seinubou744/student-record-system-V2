@@ -90,7 +90,7 @@ using (var scope = app.Services.CreateScope())
     {
         Console.WriteLine("[DEBUG] Running migrations...");
         var context = services.GetRequiredService<ApplicationDbContext>();
-        context.Database.Migrate();
+        context.Database.EnsureCreated();
         Console.WriteLine("[DEBUG] Migrations completed!");
 
         Console.WriteLine("[DEBUG] SeedData skipped for now.");
